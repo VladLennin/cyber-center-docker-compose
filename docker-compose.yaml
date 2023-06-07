@@ -1,0 +1,62 @@
+version: '3'
+services:
+  server:
+    build:
+      context: ./cyber-center-website-back
+      dockerfile: Dockerfile
+    container_name: cyber-center-server
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}a
+      DB_NAME: ${DB_NAME}
+      SECRET_KEY: ${SECRET_KEY}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+    hostname: server
+
+  client:
+    build:
+      context: ./cyber-center-website-front
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_SERVER_HOST: ${SERVER_HOST}
+        REACT_APP_SERVER_PORT: ${SERVER_PORT}
+    container_name: cyber-center-client
+    ports:
+      - "80:80"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - server
+    hostname: client
+    environment:
+      REACT_APP_SERVER_PORT: "5000"
+      REACT_APP_SERVER_HOST: "194.61.52.31"
+
+  db:
+    image: postgres
+    container_name: cyber-center-db
+    hostname: db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+
+  ftp:
+    build:
+      context: ./cyber-center-website-ftp
+      dockerfile: Dockerfile
+
+    container_name: cyber-center-ftp
+    ports:
+      - "5001:5001"
+    hostname: ftp
