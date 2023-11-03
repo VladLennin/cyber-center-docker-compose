@@ -36,6 +36,7 @@ services:
       - server
     hostname: client
     environment:
+      REACT_APP_PORT: 15001
       REACT_APP_HOST: server
       REACT_APP_FTP: ftp
     volumes:
