@@ -48,6 +48,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 0000
       POSTGRES_DB: cyber_center
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   ftp:
     build:
       context: ./cyber-center-website-ftp
@@ -57,3 +60,6 @@ services:
     ports:
       - "15005:15005"
     hostname: ftp
+
+volumes:
+  postgres_data:
