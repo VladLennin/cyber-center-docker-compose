@@ -42,11 +42,12 @@ services:
     restart: always
     ports:
       - "5432:5432"
+    expose:
+      - "5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 0000
       POSTGRES_DB: cyber_center
-
   ftp:
     build:
       context: ./cyber-center-website-ftp
