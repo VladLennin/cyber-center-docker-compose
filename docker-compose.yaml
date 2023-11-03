@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: cyber-center-server
     ports:
-      - "5000:5000"
+      - "15001:15001"
     depends_on:
       - db
     environment:
@@ -18,7 +18,7 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
-    hostname: server
+    hostname: server ø
 
   client:
     build:
@@ -29,16 +29,21 @@ services:
         REACT_APP_SERVER_PORT: ${SERVER_PORT}
     container_name: cyber-center-client
     ports:
-      - "80:80"
+      - "15000:15000"
     stdin_open: true
     tty: true
     depends_on:
       - server
     hostname: client
     environment:
-      REACT_APP_SERVER_PORT: "5000"
-      REACT_APP_SERVER_HOST: "194.61.52.31"
-
+      REACT_APP_SERVER_PORT: "15000"
+      REACT_APP_SERVER_HOST: "46.219.127.6"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    volumes:
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+ 
   db:
     image: postgres
     container_name: cyber-center-db
@@ -51,6 +56,14 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
 
+  certbot:
+    image: certbot/certbot
+    container_name: cyber-center-certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
   ftp:
     build:
       context: ./cyber-center-website-ftp
@@ -58,5 +71,5 @@ services:
 
     container_name: cyber-center-ftp
     ports:
-      - "5001:5001"
+      - "15005:15005"
     hostname: ftp
