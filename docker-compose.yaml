@@ -14,7 +14,7 @@ services:
       DB_PORT: 5432
       DB_USERNAME: postgres
       DB_PASSWORD: 0000
-      DB_NAME: cyber_center
+      DB_NAME: cyber-center
       SECRET_KEY: some_secret_key
       JWT_ACCESS_SECRET: JWT_ACCESS_SECRET
       JWT_REFRESH_SECRET: JWT_REFRESH_SECRET
@@ -47,7 +47,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 0000
-      POSTGRES_DB: cyber_center
+      POSTGRES_DB: cyber-center
       POSTGRES_PORT: 5432
       POSTGRES_HOST: localhost
     volumes:
